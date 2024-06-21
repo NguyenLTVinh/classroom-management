@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    title Add Class
+  body
+    h1 Add a New Class
+    form(action="/upload-class" method="post" enctype="multipart/form-data")
+      div
+        label(for="className") Class Name:
+        input(type="text" name="className" required)
+      div
+        label(for="file") Upload CSV File:
+        input(type="file" name="file" accept=".csv" required)
+      div
+        button(type="submit") Upload File

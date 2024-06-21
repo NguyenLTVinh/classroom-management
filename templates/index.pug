@@ -15,7 +15,6 @@ html(lang="en")
     table#data-table(border="1")
       thead
         tr
-          th Number
           th Name
           th Gender
           th Birthday
@@ -25,7 +24,6 @@ html(lang="en")
         if students
           each row in students
             tr
-              td= row.number
               td= row.name
               td= row.gender
               td= row.birthday

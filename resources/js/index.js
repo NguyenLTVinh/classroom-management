@@ -11,7 +11,6 @@ $(document).ready(function() {
                 if (data.students && data.students.length > 0) {
                     data.students.forEach(function(row) {
                         var tr = $('<tr>');
-                        tr.append('<td>' + row.number + '</td>');
                         tr.append('<td>' + row.name + '</td>');
                         tr.append('<td>' + row.gender + '</td>');
                         tr.append('<td>' + row.birthday + '</td>');
