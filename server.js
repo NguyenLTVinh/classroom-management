@@ -54,9 +54,12 @@ app.get('/add-class', (req, res) => {
     res.render('addclass');
 });
 
+app.get('/form', (req, res) => {
+    res.render('form');
+});
+
 // upload endpoint parse csv and add each line to mysql database.
 app.post('/upload-class', upload.single('file'), (req, res) => {
-    const className = req.body['className'];
     const filePath = req.file.path;
 
     const results = [];
@@ -66,9 +69,8 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
         .on('end', () => {
             const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const validDateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-
             for (let row of results) {
-                const { name, gender, birthday, email1, email2 } = row;
+                const { 'Họ Và Tên': name, 'Lớp': className, 'Giới Tính': gender, 'Ngày Sinh': birthday, 'Email 1': email1, 'Email 2': email2 } = row;
                 
                 if (!validDateRegex.test(birthday)) {
                     return res.status(400).send(`Invalid date format for ${name}`);
