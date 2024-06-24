@@ -31,29 +31,9 @@ const storage = multer.diskStorage({
   
 const upload = multer({ storage: storage });
 
-// index page display students information for each class.
-app.get('/', async (req, res) => {
-    const year = req.query.year || getCurrentSchoolYear();
-    const block = req.query.block || '';
-    const className = req.query.className || '';
-  
-    try {
-      const [students, classes] = await Promise.all([
-        data.getStudentsByFilters(year, block, className),
-        data.getClassListByFilters(year, block)
-      ]);
-  
-      if (req.xhr) {
-        res.json({ students });
-      } else {
-        res.render('index', { students, classes, currentYear: getCurrentSchoolYear() });
-      }
-    } catch (error) {
-      res.status(500).send('Error fetching data');
-    }
-});  
 
-// helpers for index
+// HELPERS
+// helpers
 function getCurrentSchoolYear() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
@@ -78,6 +58,37 @@ app.get('/getClassNames', async (req, res) => {
         res.json(classes);
     } catch (error) {
         res.status(500).send('Error fetching class names');
+    }
+});
+
+// index page display students information for each class.
+app.get('/', async (req, res) => {
+    const year = req.query.year || getCurrentSchoolYear();
+    const block = req.query.block || '';
+    const className = req.query.className || '';
+  
+    try {
+      const [students, classes] = await Promise.all([
+        data.getStudentsByFilters(year, block, className),
+        data.getClassListByFilters(year, block)
+      ]);
+  
+      if (req.xhr) {
+        res.json({ students });
+      } else {
+        res.render('index', { students, classes, currentYear: getCurrentSchoolYear() });
+      }
+    } catch (error) {
+      res.status(500).send('Error fetching data');
+    }
+});
+
+app.get('/students', async (req, res) => {
+    try {
+        const students = await data.getStudentsByClass(req.query.class);
+        res.json(students);
+    } catch (error) {
+        res.status(500).send('Error fetching students');
     }
 });
 
@@ -127,6 +138,50 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
         .on('error', (error) => {
             res.status(500).send('Error reading the file');
         });
+});
+
+// render add-grades form
+app.get('/add-grades', async (req, res) => {
+    try {
+        const classes = await data.getClassList();
+        res.render('addgrades', { classes });
+    } catch (error) {
+        res.status(500).send('Error fetching classes');
+    }
+});
+
+// Endpoint to handle form submission
+app.post('/add-grades', async (req, res) => {
+    try {
+        const schoolYear = getCurrentSchoolYear();
+        const { info, subjectGrades } = req.body;
+        console.log(req.body);
+        // Convert checkbox values
+        for (let key in subjectGrades) {
+            if (subjectGrades[key] === 'on') {
+                subjectGrades[key] = 'D';
+            } else if (!subjectGrades[key]) {
+                subjectGrades[key] = 'K';
+            }
+        }
+
+        const grades = Object.keys(subjectGrades).map(subject => ({
+            email1: info.email1,
+            subject: subject,
+            term: info.term,
+            grade: subjectGrades[subject],
+            passfail: (subjectGrades[subject] === 'D' || subjectGrades[subject] === 'K') ? subjectGrades[subject] : null,
+            year: schoolYear
+        }));
+
+        for (const grade of grades) {
+            await data.insertGrade(grade);
+        }
+
+        res.send('Grades added successfully');
+    } catch (error) {
+        res.status(500).send('Error adding grades');
+    }
 });
 
 app.listen(port, () => {
