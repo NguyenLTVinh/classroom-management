@@ -9,7 +9,7 @@ const pug = require('pug');
 const data = require('./data');
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,19 +33,51 @@ const upload = multer({ storage: storage });
 
 // index page display students information for each class.
 app.get('/', async (req, res) => {
-    const className = req.query.className || '6CI1'; // default
+    const year = req.query.year || getCurrentSchoolYear();
+    const block = req.query.block || '';
+    const className = req.query.className || '';
+  
     try {
-        const [students, classes] = await Promise.all([
-            data.getStudentsByClass(className),
-            data.getClassList()
-        ]);
-        if (req.xhr) {
-            res.json({ students });
-        } else {
-            res.render('index', { students, classes });
-        }
+      const [students, classes] = await Promise.all([
+        data.getStudentsByFilters(year, block, className),
+        data.getClassListByFilters(year, block)
+      ]);
+  
+      if (req.xhr) {
+        res.json({ students });
+      } else {
+        res.render('index', { students, classes, currentYear: getCurrentSchoolYear() });
+      }
     } catch (error) {
-        res.status(500).send('Error fetching data');
+      res.status(500).send('Error fetching data');
+    }
+});  
+
+// helpers for index
+function getCurrentSchoolYear() {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    return currentMonth >= 8 ? currentYear : currentYear - 1;
+}
+
+app.get('/getClassBlocks', async (req, res) => {
+    const year = req.query.year;
+    try {
+        const blocks = await data.getClassBlocks(year);
+        res.json(blocks);
+    } catch (error) {
+        res.status(500).send('Error fetching class blocks');
+    }
+});
+  
+app.get('/getClassNames', async (req, res) => {
+    const year = req.query.year;
+    const block = req.query.block;
+    try {
+        const classes = await data.getClassListByFilters(year, block);
+        res.json(classes);
+    } catch (error) {
+        res.status(500).send('Error fetching class names');
     }
 });
 

@@ -1,30 +1,76 @@
 $(document).ready(function() {
-    $('#class-select').on('change', function() {
-        var selectedClass = $(this).val();
-        $.ajax({
-            url: '/',
-            type: 'GET',
-            data: { className: selectedClass },
-            success: function(data) {
-                var tbody = $('#data-table tbody');
-                tbody.empty();
-                if (data.students && data.students.length > 0) {
-                    data.students.forEach(function(row) {
-                        var tr = $('<tr>');
-                        tr.append('<td>' + row.name + '</td>');
-                        tr.append('<td>' + row.gender + '</td>');
-                        tr.append('<td>' + row.birthday + '</td>');
-                        tr.append('<td>' + row.email1 + '</td>');
-                        tr.append('<td>' + (row.email2 || '') + '</td>');
-                        tbody.append(tr);
-                    });
-                } else {
-                    tbody.append('<tr><td colspan="6">No data available</td></tr>');
-                }
-            },
-            error: function() {
-                alert('Error fetching data');
-            }
-        });
+    // Function to get the current school year
+    function getCurrentSchoolYear() {
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      return currentMonth >= 8 ? currentYear : currentYear - 1;
+    }
+  
+    // Populate the school year dropdown
+    const currentSchoolYear = getCurrentSchoolYear();
+    for (let year = 2019; year <= currentSchoolYear + 1; year++) {
+      $('#year-select').append(new Option(year, year, year === currentSchoolYear));
+    }
+  
+    // Populate the class blocks based on the selected school year
+    $('#year-select').change(function() {
+      const selectedYear = $(this).val();
+      $.ajax({
+        url: '/getClassBlocks',
+        data: { year: selectedYear },
+        success: function(blocks) {
+          $('#block-select').empty().append(new Option('All Blocks', ''));
+          blocks.forEach(block => {
+            $('#block-select').append(new Option(block, block));
+          });
+        }
+      });
     });
-});
+  
+    // Populate the class names based on the selected school year and class block
+    $('#block-select').change(function() {
+      const selectedYear = $('#year-select').val();
+      const selectedBlock = $(this).val();
+      $.ajax({
+        url: '/getClassNames',
+        data: { year: selectedYear, block: selectedBlock },
+        success: function(classes) {
+          $('#class-select').empty().append(new Option('All Classes', ''));
+          classes.forEach(className => {
+            $('#class-select').append(new Option(className, className));
+          });
+        }
+      });
+    });
+  
+    $('#year-select').change();
+  
+    $('#year-select, #block-select, #class-select').change(function() {
+      const selectedYear = $('#year-select').val();
+      const selectedBlock = $('#block-select').val();
+      const selectedClass = $('#class-select').val();
+      $.ajax({
+        url: '/',
+        data: { year: selectedYear, block: selectedBlock, className: selectedClass },
+        success: function(response) {
+          const $tbody = $('#data-table tbody').empty();
+          if (response.students.length) {
+            response.students.forEach(student => {
+              const row = `<tr>
+                <td>${student.name}</td>
+                <td>${student.class}</td>
+                <td>${student.gender}</td>
+                <td>${student.birthday}</td>
+                <td>${student.email1}</td>
+                <td>${student.email2 || ''}</td>
+              </tr>`;
+              $tbody.append(row);
+            });
+          } else {
+            $tbody.append('<tr><td colspan="6">No data available</td></tr>');
+          }
+        }
+      });
+    });
+  });
+  

@@ -7,24 +7,36 @@ html(lang="en")
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")
     script(src="/js/index.js")
   body
-    h1 Data from MySQL Database
+    h1 Danh Sách Học Sinh
+    label(for="year-select") Năm Học:
+    select#year-select
+      // The options will be populated dynamically
+      option(value=currentYear selected)= currentYear
+    label(for="block-select") Khối Lớp:
+    select#block-select
+      option(value="") All Blocks
+      // The options will be populated dynamically
+    label(for="class-select") Lớp:
     select#class-select
+      option(value="") All Classes
       if classes
         each className in classes
           option(value=className)= className
     table#data-table(border="1")
       thead
         tr
-          th Name
-          th Gender
-          th Birthday
-          th Email1
-          th Email2
+          th Họ và Tên
+          th Lớp
+          th Giới Tính
+          th Ngày Sinh
+          th Email 1
+          th Email 2
       tbody
         if students
           each row in students
             tr
               td= row.name
+              td= row.class
               td= row.gender
               td= row.birthday
               td= row.email1
