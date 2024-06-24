@@ -102,7 +102,7 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
             const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const validDateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
             for (let row of results) {
-                const { 'Họ Và Tên': name, 'Lớp': className, 'Giới Tính': gender, 'Ngày Sinh': birthday, 'Email 1': email1, 'Email 2': email2 } = row;
+                const { 'Họ Và Tên': name, 'Khối': block, 'Lớp': className, 'Giới Tính': gender, 'Ngày Sinh': birthday, 'Email 1': email1, 'Email 2': email2, 'Năm Học': schoolYear} = row;
                 
                 if (!validDateRegex.test(birthday)) {
                     return res.status(400).send(`Invalid date format for ${name}`);
@@ -112,9 +112,9 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
                     return res.status(400).send(`Invalid email format for ${name}`);
                 }
                 const [day, month, year] = birthday.split('/');
-                const formattedBirthday = `${year}-${month}-${day}`
+                const formattedBirthday = `${year}-${month}-${day}`;
 
-                data.insertStudent(name, className, gender, formattedBirthday, email1, email2, (err, result) => {
+                data.insertStudent(name, className, gender, formattedBirthday, email1, email2, block, schoolYear, (err, result) => {
                     if (err) {
                         return res.status(500).send('Database error');
                     }
