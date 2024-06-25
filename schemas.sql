@@ -6,7 +6,8 @@ CREATE TABLE students (
     email1 VARCHAR(255) NOT NULL,
     email2 VARCHAR(255)
     block INT,
-    year INT
+    year INT,
+    UNIQUE (name, class, birthday, email1)
 );
 
 CREATE TABLE grades (
@@ -14,5 +15,7 @@ CREATE TABLE grades (
     subject VARCHAR(50) NOT NULL,
     term VARCHAR(10) NOT NULL,
     grade FLOAT,
-    passfail CHAR(1)
+    passfail CHAR(1),
+    year INT,
+    UNIQUE (email1, subject, term, year)
 );
