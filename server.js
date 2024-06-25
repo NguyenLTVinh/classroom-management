@@ -155,7 +155,6 @@ app.post('/add-grades', async (req, res) => {
     try {
         const schoolYear = getCurrentSchoolYear();
         const { info, subjectGrades } = req.body;
-        console.log(req.body);
         // Convert checkbox values
         for (let key in subjectGrades) {
             if (subjectGrades[key] === 'on') {
@@ -164,15 +163,19 @@ app.post('/add-grades', async (req, res) => {
                 subjectGrades[key] = 'K';
             }
         }
+       
+        const grades = Object.keys(subjectGrades).map(subject => {
+            const gradeValue = (subjectGrades[subject] === 'D') ? 10 : (subjectGrades[subject] === 'K') ? 0 : parseFloat(subjectGrades[subject]);
 
-        const grades = Object.keys(subjectGrades).map(subject => ({
-            email1: info.email1,
-            subject: subject,
-            term: info.term,
-            grade: subjectGrades[subject],
-            passfail: (subjectGrades[subject] === 'D' || subjectGrades[subject] === 'K') ? subjectGrades[subject] : null,
-            year: schoolYear
-        }));
+            return {
+                email1: info.email1,
+                subject: subject,
+                term: info.term,
+                grade: gradeValue,
+                passfail: (subjectGrades[subject] === 'D' || subjectGrades[subject] === 'K') ? subjectGrades[subject] : null,
+                year: schoolYear
+            };
+        });
 
         for (const grade of grades) {
             await data.insertGrade(grade);
