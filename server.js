@@ -61,6 +61,15 @@ app.get('/getClassNames', async (req, res) => {
     }
 });
 
+app.get('/students', async (req, res) => {
+    try {
+        const students = await data.getStudentsByClass(req.query.class);
+        res.json(students);
+    } catch (error) {
+        res.status(500).send('Error fetching students');
+    }
+});
+
 // index page display students information for each class.
 app.get('/', async (req, res) => {
     const year = req.query.year || getCurrentSchoolYear();
@@ -83,60 +92,48 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/students', async (req, res) => {
-    try {
-        const students = await data.getStudentsByClass(req.query.class);
-        res.json(students);
-    } catch (error) {
-        res.status(500).send('Error fetching students');
-    }
-});
-
-// add class page to upload a csv file to add the students all at once.
-app.get('/add-class', (req, res) => {
-    res.render('addclass');
-});
-
 app.get('/form', (req, res) => {
     res.render('form');
 });
 
-// upload endpoint parse csv and add each line to mysql database.
+// add class page to upload a csv file to add the students all at once.
 app.post('/upload-class', upload.single('file'), (req, res) => {
     const filePath = req.file.path;
-
     const results = [];
+
     fs.createReadStream(filePath)
         .pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', () => {
             const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const validDateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+
             for (let row of results) {
                 const { 'Họ Và Tên': name, 'Khối': block, 'Lớp': className, 'Giới Tính': gender, 'Ngày Sinh': birthday, 'Email 1': email1, 'Email 2': email2, 'Năm Học': schoolYear} = row;
-                
+
                 if (!validDateRegex.test(birthday)) {
-                    return res.status(400).send(`Invalid date format for ${name}`);
+                    return res.redirect(`/add-class?error=Invalid date format for ${name}`);
                 }
 
                 if (!validEmailRegex.test(email1) || (email2 && !validEmailRegex.test(email2))) {
-                    return res.status(400).send(`Invalid email format for ${name}`);
+                    return res.redirect(`/add-class?error=Invalid email format for ${name}`);
                 }
+                
                 const [day, month, year] = birthday.split('/');
                 const formattedBirthday = `${year}-${month}-${day}`;
 
                 data.insertStudent(name, className, gender, formattedBirthday, email1, email2, block, schoolYear, (err, result) => {
                     if (err) {
-                        return res.status(500).send('Database error');
+                        return res.redirect('/add-class?error=Database error');
                     }
                 });
             }
 
             fs.unlinkSync(filePath);
-            res.send('Class data uploaded successfully');
+            res.redirect('/add-class?message=Class data uploaded successfully');
         })
         .on('error', (error) => {
-            res.status(500).send('Error reading the file');
+            res.redirect('/add-class?error=Error reading the file');
         });
 });
 

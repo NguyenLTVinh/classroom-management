@@ -2,11 +2,31 @@ doctype html
 html
   head
     title Add Class
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css')
+    script(src='https://code.jquery.com/jquery-3.6.0.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
   body
-    h1 Add a New Class
+    h1 Thêm Học Sinh
     form(action="/upload-class" method="post" enctype="multipart/form-data")
       div
-        label(for="file") Upload CSV File:
+        label(for="file") Chọn File CSV:
         input(type="file" name="file" accept=".csv" required)
       div
-        button(type="submit") Upload File
+        button(type="submit") Tải Lên
+
+    //- Snackbar messages
+    if message
+      script.
+        $(document).ready(function() {
+          M.toast({html: "#{message}", classes: 'rounded'});
+        });
+    if error
+      script.
+        $(document).ready(function() {
+          M.toast({html: "#{error}", classes: 'rounded red darken-4'});
+        });
+
+    script.
+      $(document).ready(function(){
+        M.AutoInit();
+      });
