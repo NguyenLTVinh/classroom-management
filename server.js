@@ -33,7 +33,6 @@ const upload = multer({ storage: storage });
 
 
 // HELPERS
-// helpers
 function getCurrentSchoolYear() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
@@ -63,7 +62,8 @@ app.get('/getClassNames', async (req, res) => {
 
 app.get('/students', async (req, res) => {
     try {
-        const students = await data.getStudentsByClass(req.query.class);
+        const { class: className } = req.query;
+        const students = await data.getStudentsByClass(className);
         res.json(students);
     } catch (error) {
         res.status(500).send('Error fetching students');
@@ -112,11 +112,11 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
                 const { 'Họ Và Tên': name, 'Khối': block, 'Lớp': className, 'Giới Tính': gender, 'Ngày Sinh': birthday, 'Email 1': email1, 'Email 2': email2, 'Năm Học': schoolYear} = row;
 
                 if (!validDateRegex.test(birthday)) {
-                    return res.redirect(`/add-class?error=Invalid date format for ${name}`);
+                    return res.redirect(`/add-class?error=Sai Định Dạng Ngày Sinh`);
                 }
 
                 if (!validEmailRegex.test(email1) || (email2 && !validEmailRegex.test(email2))) {
-                    return res.redirect(`/add-class?error=Invalid email format for ${name}`);
+                    return res.redirect(`/add-class?error=Sai Định Dạng Email`);
                 }
                 
                 const [day, month, year] = birthday.split('/');
@@ -124,16 +124,16 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
 
                 data.insertStudent(name, className, gender, formattedBirthday, email1, email2, block, schoolYear, (err, result) => {
                     if (err) {
-                        return res.redirect('/add-class?error=Database error');
+                        return res.redirect('/add-class?error=Lỗi Database');
                     }
                 });
             }
 
             fs.unlinkSync(filePath);
-            res.redirect('/add-class?message=Class data uploaded successfully');
+            res.redirect('/add-class?message=Thêm Học Sinh Thành Công');
         })
         .on('error', (error) => {
-            res.redirect('/add-class?error=Error reading the file');
+            res.redirect('/add-class?error=Lỗi Khi Đọc File');
         });
 });
 
@@ -141,7 +141,8 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
 app.get('/add-grades', async (req, res) => {
     try {
         const classes = await data.getClassList();
-        res.render('addgrades', { classes });
+        const { message, error } = req.query;
+        res.render('addgrades', { classes, message, error });
     } catch (error) {
         res.status(500).send('Error fetching classes');
     }
@@ -152,6 +153,7 @@ app.post('/add-grades', async (req, res) => {
     try {
         const schoolYear = getCurrentSchoolYear();
         const { info, subjectGrades } = req.body;
+
         // Convert checkbox values
         for (let key in subjectGrades) {
             if (subjectGrades[key] === 'on') {
@@ -178,9 +180,9 @@ app.post('/add-grades', async (req, res) => {
             await data.insertGrade(grade);
         }
 
-        res.send('Grades added successfully');
+        res.redirect('/add-grades?message=Thêm Điểm Thành Công');
     } catch (error) {
-        res.status(500).send('Error adding grades');
+        res.redirect('/add-grades?error=Có Lỗi Khi Thêm Điểm');
     }
 });
 

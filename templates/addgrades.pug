@@ -2,47 +2,86 @@ doctype html
 html
     head
         title Add Grades
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css')
         script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
     body
+        h1 Thêm Điểm
         form(action="/add-grades" method="POST")
             .row
-                select#class(name="className" required)
-                    option(value="") Select Class
-                    each className in classes
-                        option(value=className) #{className}
-                select#student(name="info[email1]" required)
-                    option(value="") Select Student
-                select(name="info[term]" required)
-                    option(value="HK1") HK1
-                    option(value="HK2") HK2
+                .input-field.col.s12
+                    select#class(name="className" required)
+                        option(value="" disabled selected) 
+                        each className in classes
+                            option(value=className) #{className}
+                    label(for="class") Chọn Lớp
+                .input-field.col.s12
+                    select#student(name="info[email1]" required)
+                        option(value="" disabled selected) Select Student
+                    label(for="student") Chọn Học Sinh
+                .input-field.col.s12
+                    select(name="info[term]" required)
+                        option(value="HK1") HK1
+                        option(value="HK2") HK2
+                    label(for="term") Chọn Học Kì
             .row
-                label(for="toan") Toán
-                input#toan(type="number" step="0.1" name="subjectGrades[Toán]")
-                label(for="tienganh") Tiếng Anh
-                input#tienganh(type="number" step="0.1" name="subjectGrades[Tiếng Anh]")
-                label(for="nguvan") Ngữ Văn
-                input#nguvan(type="number" step="0.1" name="subjectGrades[Ngữ Văn]")
-                label(for="gdcd") GDCD
-                input#gdcd(type="number" step="0.1" name="subjectGrades[GDCD]")
-                label(for="tinhoc") Tin học
-                input#tinhoc(type="number" step="0.1" name="subjectGrades[Tin học]")
-                label(for="congnghe") Công nghệ
-                input#congnghe(type="number" step="0.1" name="subjectGrades[Công nghệ]")
-                label(for="lsdl") LS & ĐL
-                input#lsdl(type="number" step="0.1" name="subjectGrades[LS & ĐL]")
-                label(for="khtn") Khoa học tự nhiên
-                input#khtn(type="number" step="0.1" name="subjectGrades[Khoa học tự nhiên]")
+                .input-field.col.s12
+                    label(for="toan") Toán
+                    input#toan(type="number" step="0.1" name="subjectGrades[Toán]")
+                .input-field.col.s12
+                    label(for="tienganh") Tiếng Anh
+                    input#tienganh(type="number" step="0.1" name="subjectGrades[Tiếng Anh]")
+                .input-field.col.s12
+                    label(for="nguvan") Ngữ Văn
+                    input#nguvan(type="number" step="0.1" name="subjectGrades[Ngữ Văn]")
+                .input-field.col.s12
+                    label(for="gdcd") Giáo Dục Công Dân
+                    input#gdcd(type="number" step="0.1" name="subjectGrades[GDCD]")
+                .input-field.col.s12
+                    label(for="tinhoc") Tin học
+                    input#tinhoc(type="number" step="0.1" name="subjectGrades[Tin học]")
+                .input-field.col.s12
+                    label(for="congnghe") Công nghệ
+                    input#congnghe(type="number" step="0.1" name="subjectGrades[Công nghệ]")
+                .input-field.col.s12
+                    label(for="lsdl") Lịch Sử và Địa Lý
+                    input#lsdl(type="number" step="0.1" name="subjectGrades[LS & ĐL]")
+                .input-field.col.s12
+                    label(for="khtn") Khoa học tự nhiên
+                    input#khtn(type="number" step="0.1" name="subjectGrades[Khoa học tự nhiên]")
             .row
-                label(for="gdct") GDTC
-                input(type="checkbox" id="gdct" name="subjectGrades[GDTC]")
-                label(for="hdtt") HĐTT/TN/HN
-                input(type="checkbox" id="hdtt" name="subjectGrades[HĐTT/TN/HN]")
-                label(for="nghethuat") Nghệ thuật
-                input(type="checkbox" id="nghethuat" name="subjectGrades[Nghệ thuật]")
-                label(for="ndgddp") Nội dung giáo dục của địa phương
-                input(type="checkbox" id="ndgddp" name="subjectGrades[Nội dung giáo dục của địa phương]")
+                p Môn Học Không Lấy Điểm (Tick Hộp Nếu Đạt)
+                .col.s12
+                    p
+                        label
+                            input(type="checkbox" id="gdct" name="subjectGrades[GDTC]")
+                            span GDTC
+                    p
+                        label
+                            input(type="checkbox" id="hdtt" name="subjectGrades[HĐTT/TN/HN]")
+                            span HĐTT/TN/HN
+                    p
+                        label
+                            input(type="checkbox" id="nghethuat" name="subjectGrades[Nghệ thuật]")
+                            span Nghệ thuật
+                    p
+                        label
+                            input(type="checkbox" id="ndgddp" name="subjectGrades[Nội dung giáo dục của địa phương]")
+                            span Nội dung giáo dục của địa phương
 
-            button(type="submit") Submit
+            button(type="submit" class="btn waves-effect waves-light") Submit
+
+        //- Snackbar messages
+        if message
+            script.
+                $(document).ready(function() {
+                    M.toast({html: "#{message}", classes: 'rounded'});
+                });
+        if error
+            script.
+                $(document).ready(function() {
+                    M.toast({html: "#{error}", classes: 'rounded red darken-4'});
+                });
 
         script.
             $(document).ready(function() {
@@ -54,13 +93,17 @@ html
                         success: function(data) {
                             const studentSelect = $('#student');
                             studentSelect.empty();
+                            studentSelect.append(new Option("Select Student", "", false, false));
                             data.forEach(student => {
                                 studentSelect.append(new Option(student.name, student.email1));
                             });
+                            studentSelect.formSelect();
                         },
                         error: function() {
-                            alert('Error fetching students');
+                            M.toast({html: 'Error fetching students', classes: 'rounded red darken-4'});
                         }
                     });
                 });
+
+                $('select').formSelect();
             });
