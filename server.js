@@ -97,6 +97,10 @@ app.get('/form', (req, res) => {
 });
 
 // add class page to upload a csv file to add the students all at once.
+app.get('/add-class', (req, res) => {
+    res.render('addclass');
+});
+
 app.post('/upload-class', upload.single('file'), (req, res) => {
     const filePath = req.file.path;
     const results = [];
