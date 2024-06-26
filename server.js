@@ -63,7 +63,7 @@ app.get('/api/getClassNames', async (req, res) => {
 
 app.get('/api/students', async (req, res) => {
     try {
-        const { class: className } = req.query;
+        const className = req.query['className'];
         const students = await data.getStudentsByClass(className);
         res.json(students);
     } catch (error) {
@@ -187,9 +187,19 @@ app.post('/add-grades', async (req, res) => {
     }
 });
 
-// display grades form
+// grades display page
 app.get('/grades', async (req, res) => {
-    res.render('grades');
+    const year = req.query.year || getCurrentSchoolYear();
+    const block = req.query.block || '';
+    const className = req.query.className || '';
+    const studentEmail = req.query.studentEmail || '';
+
+    try {
+        const students = await data.getGradesByFilters(year, block, className, studentEmail);
+        res.render('grades', { students, currentYear: getCurrentSchoolYear() });
+    } catch (error) {
+        res.status(500).send('Error fetching grades');
+    }
 });
 
 app.listen(port, () => {
