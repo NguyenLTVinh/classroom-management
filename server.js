@@ -39,7 +39,8 @@ function getCurrentSchoolYear() {
     return currentMonth >= 8 ? currentYear : currentYear - 1;
 }
 
-app.get('/getClassBlocks', async (req, res) => {
+// api endpoints
+app.get('/api/getClassBlocks', async (req, res) => {
     const year = req.query.year;
     try {
         const blocks = await data.getClassBlocks(year);
@@ -49,7 +50,7 @@ app.get('/getClassBlocks', async (req, res) => {
     }
 });
   
-app.get('/getClassNames', async (req, res) => {
+app.get('/api/getClassNames', async (req, res) => {
     const year = req.query.year;
     const block = req.query.block;
     try {
@@ -60,7 +61,7 @@ app.get('/getClassNames', async (req, res) => {
     }
 });
 
-app.get('/students', async (req, res) => {
+app.get('/api/students', async (req, res) => {
     try {
         const { class: className } = req.query;
         const students = await data.getStudentsByClass(className);
@@ -90,10 +91,6 @@ app.get('/', async (req, res) => {
     } catch (error) {
       res.status(500).send('Error fetching data');
     }
-});
-
-app.get('/form', (req, res) => {
-    res.render('form');
 });
 
 // add class page to upload a csv file to add the students all at once.
@@ -188,6 +185,11 @@ app.post('/add-grades', async (req, res) => {
     } catch (error) {
         res.redirect('/add-grades?error=Có Lỗi Khi Thêm Điểm');
     }
+});
+
+// display grades form
+app.get('/grades', async (req, res) => {
+    res.render('grades');
 });
 
 app.listen(port, () => {

@@ -16,7 +16,7 @@ $(document).ready(function() {
     $('#year-select').change(function() {
       const selectedYear = $(this).val();
       $.ajax({
-        url: '/getClassBlocks',
+        url: '/api/getClassBlocks',
         data: { year: selectedYear },
         success: function(blocks) {
           $('#block-select').empty().append(new Option('All Blocks', ''));
@@ -32,7 +32,7 @@ $(document).ready(function() {
       const selectedYear = $('#year-select').val();
       const selectedBlock = $(this).val();
       $.ajax({
-        url: '/getClassNames',
+        url: '/api/getClassNames',
         data: { year: selectedYear, block: selectedBlock },
         success: function(classes) {
           $('#class-select').empty().append(new Option('All Classes', ''));
