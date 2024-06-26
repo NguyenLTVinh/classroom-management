@@ -1,0 +1,79 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Grades Display
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    script(src="/js/grades.js")
+  body
+    h1 Danh Sách Điểm
+
+    label(for="year-select") Năm Học:
+    select#year-select
+      option(value=currentYear selected)= currentYear
+    label(for="block-select") Khối Lớp:
+    select#block-select
+      option(value="") All Blocks
+    label(for="class-select") Lớp:
+    select#class-select
+      option(value="") All Classes
+    label(for="student-select") Học Sinh:
+    select#student-select
+      option(value="") All Students
+
+    h2 HK1
+    table#hk1-table(border="1")
+      thead
+        tr
+          th Tên Học Sinh
+          th Email Học Sinh
+          th Toán
+          th Tiếng Anh
+          th Ngữ Văn
+          th GDCD
+          th Tin học
+          th LS & ĐL
+          th Khoa học tự nhiên
+          th GDTC
+          th Nghệ thuật
+          th Nội dung giáo dục của địa phương
+      tbody
+        if studentsHK1.length
+          each student in studentsHK1
+            tr
+              td= student.name
+              td= student.email1
+              each subject in ['Toán', 'Tiếng Anh', 'Ngữ Văn', 'GDCD', 'Tin học', 'LS & ĐL', 'Khoa học tự nhiên', 'GDTC', 'Nghệ thuật', 'Nội dung giáo dục của địa phương']
+                td= student.grades[subject] || ''
+        else
+          tr
+            td(colspan="12") No data available
+
+    h2 HK2
+    table#hk2-table(border="1")
+      thead
+        tr
+          th Tên Học Sinh
+          th Email Học Sinh
+          th Toán
+          th Tiếng Anh
+          th Ngữ Văn
+          th GDCD
+          th Tin học
+          th LS & ĐL
+          th Khoa học tự nhiên
+          th GDTC
+          th Nghệ thuật
+          th Nội dung giáo dục của địa phương
+      tbody
+        if studentsHK2.length
+          each student in studentsHK2
+            tr
+              td= student.name
+              td= student.email1
+              each subject in ['Toán', 'Tiếng Anh', 'Ngữ Văn', 'GDCD', 'Tin học', 'LS & ĐL', 'Khoa học tự nhiên', 'GDTC', 'Nghệ thuật', 'Nội dung giáo dục của địa phương']
+                td= student.grades[subject] || ''
+        else
+          tr
+            td(colspan="12") No data available

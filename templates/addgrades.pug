@@ -10,11 +10,11 @@ html
         form(action="/add-grades" method="POST")
             .row
                 .input-field.col.s12
-                    select#class(name="className" required)
+                    select#className(name="className" required)
                         option(value="" disabled selected) 
                         each className in classes
                             option(value=className) #{className}
-                    label(for="class") Chọn Lớp
+                    label(for="className") Chọn Lớp
                 .input-field.col.s12
                     select#student(name="info[email1]" required)
                         option(value="" disabled selected) Select Student
@@ -85,10 +85,10 @@ html
 
         script.
             $(document).ready(function() {
-                $('#class').change(function() {
+                $('#className').change(function() {
                     const className = $(this).val();
                     $.ajax({
-                        url: `api/students?class=${className}`,
+                        url: `api/students?className=${className}`,
                         method: 'GET',
                         success: function(data) {
                             const studentSelect = $('#student');

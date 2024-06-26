@@ -39,7 +39,7 @@ function getCurrentSchoolYear() {
     return currentMonth >= 8 ? currentYear : currentYear - 1;
 }
 
-// api endpoints
+// API ENDPOINTS FOR DATA FETCHING
 app.get('/api/getClassBlocks', async (req, res) => {
     const year = req.query.year;
     try {
@@ -71,6 +71,46 @@ app.get('/api/students', async (req, res) => {
     }
 });
 
+app.get('/api/grades', async (req, res) => {
+    const year = req.query.year || getCurrentSchoolYear();
+    const block = req.query.block || '';
+    const className = req.query.className || '';
+    const studentEmail = req.query.studentEmail || '';
+
+    try {
+        const gradesData = await data.getGradesByFilters(year, block, className, studentEmail);
+        res.json(gradesData);
+    } catch (error) {
+        res.status(500).send('Error fetching grades');
+    }
+});
+
+// GET REQUEST TO RENDER TEMPLATES
+// add class page to upload a csv file to add the students all at once.
+app.get('/add-class', (req, res) => {
+    res.render('addclass');
+});
+
+// render add-grades form
+app.get('/add-grades', async (req, res) => {
+    try {
+        const classes = await data.getClassList();
+        const { message, error } = req.query;
+        res.render('addgrades', { classes, message, error });
+    } catch (error) {
+        res.status(500).send('Error fetching classes');
+    }
+});
+
+// grades display page
+app.get('/grades', (req, res) => {
+    res.render('grades', {
+        currentYear: getCurrentSchoolYear(),
+        studentsHK1: [],
+        studentsHK2: []
+    });
+});
+
 // index page display students information for each class.
 app.get('/', async (req, res) => {
     const year = req.query.year || getCurrentSchoolYear();
@@ -93,11 +133,9 @@ app.get('/', async (req, res) => {
     }
 });
 
-// add class page to upload a csv file to add the students all at once.
-app.get('/add-class', (req, res) => {
-    res.render('addclass');
-});
 
+// POST ENDPOINTS FOR DATA SUBMISSION
+// Endpoint to handle uploading a csv to add students.
 app.post('/upload-class', upload.single('file'), (req, res) => {
     const filePath = req.file.path;
     const results = [];
@@ -138,16 +176,7 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
         });
 });
 
-// render add-grades form
-app.get('/add-grades', async (req, res) => {
-    try {
-        const classes = await data.getClassList();
-        const { message, error } = req.query;
-        res.render('addgrades', { classes, message, error });
-    } catch (error) {
-        res.status(500).send('Error fetching classes');
-    }
-});
+
 
 // Endpoint to handle form submission
 app.post('/add-grades', async (req, res) => {
@@ -184,21 +213,6 @@ app.post('/add-grades', async (req, res) => {
         res.redirect('/add-grades?message=Thêm Điểm Thành Công');
     } catch (error) {
         res.redirect('/add-grades?error=Có Lỗi Khi Thêm Điểm');
-    }
-});
-
-// grades display page
-app.get('/grades', async (req, res) => {
-    const year = req.query.year || getCurrentSchoolYear();
-    const block = req.query.block || '';
-    const className = req.query.className || '';
-    const studentEmail = req.query.studentEmail || '';
-
-    try {
-        const students = await data.getGradesByFilters(year, block, className, studentEmail);
-        res.render('grades', { students, currentYear: getCurrentSchoolYear() });
-    } catch (error) {
-        res.status(500).send('Error fetching grades');
     }
 });
 
