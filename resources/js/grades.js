@@ -73,7 +73,7 @@ $(document).ready(function() {
               let row = `<tr>
                 <td>${student.name}</td>
                 <td>${student.email1}</td>`;
-              ['Toán', 'Tiếng Anh', 'Ngữ Văn', 'GDCD', 'Tin học', 'LS & ĐL', 'Khoa học tự nhiên', 'GDTC', 'Nghệ thuật', 'Nội dung giáo dục của địa phương'].forEach(subject => {
+              ['Toán', 'Tiếng Anh', 'Ngữ Văn', 'GDCD', 'Tin học', 'LS & ĐL', 'Khoa học tự nhiên', 'GDTC', 'Nghệ thuật', 'HĐTT/TN/HN', 'Nội dung giáo dục của địa phương'].forEach(subject => {
                 row += `<td>${student.grades[subject] || ''}</td>`;
               });
               row += `</tr>`;
@@ -88,7 +88,7 @@ $(document).ready(function() {
               let row = `<tr>
                 <td>${student.name}</td>
                 <td>${student.email1}</td>`;
-              ['Toán', 'Tiếng Anh', 'Ngữ Văn', 'GDCD', 'Tin học', 'LS & ĐL', 'Khoa học tự nhiên', 'GDTC', 'Nghệ thuật', 'Nội dung giáo dục của địa phương'].forEach(subject => {
+              ['Toán', 'Tiếng Anh', 'Ngữ Văn', 'GDCD', 'Tin học', 'LS & ĐL', 'Khoa học tự nhiên', 'GDTC', 'Nghệ thuật', 'HĐTT/TN/HN', 'Nội dung giáo dục của địa phương'].forEach(subject => {
                 row += `<td>${student.grades[subject] || ''}</td>`;
               });
               row += `</tr>`;
