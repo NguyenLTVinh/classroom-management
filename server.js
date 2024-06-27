@@ -85,7 +85,29 @@ app.get('/api/grades', async (req, res) => {
     }
 });
 
+app.get('/api/index', async (req, res) => {
+    const year = req.query.year || getCurrentSchoolYear();
+    const block = req.query.block || '';
+    const className = req.query.className || '';
+
+    try {
+        const [students, classes] = await Promise.all([
+            data.getStudentsByFilters(year, block, className),
+            data.getClassListByFilters(year, block)
+        ]);
+        res.json({ students, classes });
+    } catch (error) {
+        res.status(500).send('Error fetching data');
+    }
+});
+
 // GET REQUEST TO RENDER TEMPLATES
+// index page display students information for each class.
+app.get('/', (req, res) => {
+    const currentYear = getCurrentSchoolYear();
+    res.render('index', { currentYear, students: [], classes: [] });
+});
+
 // add class page to upload a csv file to add the students all at once.
 app.get('/add-class', (req, res) => {
     res.render('addclass');
@@ -110,29 +132,6 @@ app.get('/grades', (req, res) => {
         studentsHK2: []
     });
 });
-
-// index page display students information for each class.
-app.get('/', async (req, res) => {
-    const year = req.query.year || getCurrentSchoolYear();
-    const block = req.query.block || '';
-    const className = req.query.className || '';
-  
-    try {
-      const [students, classes] = await Promise.all([
-        data.getStudentsByFilters(year, block, className),
-        data.getClassListByFilters(year, block)
-      ]);
-  
-      if (req.xhr) {
-        res.json({ students });
-      } else {
-        res.render('index', { students, classes, currentYear: getCurrentSchoolYear() });
-      }
-    } catch (error) {
-      res.status(500).send('Error fetching data');
-    }
-});
-
 
 // POST ENDPOINTS FOR DATA SUBMISSION
 // Endpoint to handle uploading a csv to add students.
