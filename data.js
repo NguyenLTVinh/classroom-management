@@ -161,6 +161,33 @@ async function getGradesByFilters(year, block, className, studentEmail) {
     }
 }
 
+async function getStudentsByClassForAttendance(class_name, year) {
+    const query = 'SELECT name, email1, late, excused, unexcused FROM students WHERE class = ? AND year = ?';
+    try {
+        const results = await connection.awaitQuery(query, [class_name, year]);
+        return results;
+    } catch (error) {
+        console.error('Error fetching students for attendance:', error);
+        throw error;
+    }
+}
+
+async function updateAttendance(attendanceData) {
+    const queries = attendanceData.map(student => {
+        return connection.awaitQuery(
+            'UPDATE students SET late = ?, excused = ?, unexcused = ? WHERE email1 = ?',
+            [student.late, student.excused, student.unexcused, student.email]
+        );
+    });
+
+    try {
+        await Promise.all(queries);
+    } catch (error) {
+        console.error('Error updating attendance:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getStudentsByClass,
     getClassList,
@@ -169,5 +196,7 @@ module.exports = {
     getClassListByFilters,
     getClassBlocks,
     insertGrade,
-    getGradesByFilters
+    getGradesByFilters,
+    getStudentsByClassForAttendance,
+    updateAttendance
 };

@@ -4,9 +4,12 @@ CREATE TABLE students (
     gender VARCHAR(50) NOT NULL,
     birthday DATE NOT NULL,
     email1 VARCHAR(255) NOT NULL,
-    email2 VARCHAR(255)
+    email2 VARCHAR(255),
     block INT,
     year INT,
+    excused INT DEFAULT 0,
+    unexcused INT DEFAULT 0,
+    late INT DEFAULT 0,
     UNIQUE (name, class, birthday, email1)
 );
 

@@ -133,6 +133,19 @@ app.get('/grades', (req, res) => {
     });
 });
 
+// attendance page
+app.get('/attendance', async (req, res) => {
+    const className = req.query.className;
+    const year = getCurrentSchoolYear();
+
+    try {
+        const students = await data.getStudentsByClassForAttendance(className, year);
+        res.render('attendance', { className, students });
+    } catch (error) {
+        res.status(500).send('Error fetching attendance data');
+    }
+});
+
 // POST ENDPOINTS FOR DATA SUBMISSION
 // Endpoint to handle uploading a csv to add students.
 app.post('/upload-class', upload.single('file'), (req, res) => {
@@ -212,6 +225,18 @@ app.post('/add-grades', async (req, res) => {
         res.redirect('/add-grades?message=Thêm Điểm Thành Công');
     } catch (error) {
         res.redirect('/add-grades?error=Có Lỗi Khi Thêm Điểm');
+    }
+});
+
+// update attendace
+app.post('/attendance', async (req, res) => {
+    const { attendance } = req.body;
+
+    try {
+        await data.updateAttendance(attendance);
+        res.status(200).send('Attendance data saved successfully');
+    } catch (error) {
+        res.status(500).send('Error saving attendance data');
     }
 });
 
