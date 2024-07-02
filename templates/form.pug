@@ -1,0 +1,106 @@
+doctype html
+html
+    head
+        title #{className} Nhìn lại và suy ngẫm
+        link(rel="stylesheet", href="/css/styles.css")
+    body
+        h1 #{className} Nhìn lại và suy ngẫm
+        form(action="/submit-form", method="POST")
+            input(type="hidden", name="className", value=className)
+            
+            // Section 1: Student Selection
+            h2 Họ và tên *
+            each student in students
+                div
+                    input(type="radio", name="student", value=student.email1 required)
+                    label #{student.name}
+            
+            // Section 2: Self-evaluation Questions
+            h2 Mục học sinh tự đánh giá
+            h3 Kỉ luật bản thân:
+            each item, index in ["Đến lớp đúng giờ", "Mặc đúng lễ phục/đồng phục", "Bàn học, giá sách gọn gàng", "Sử dụng ngôn ngữ văn minh, lịch sự", "Giơ tay khi muốn phát biểu, không nói leo", "Không làm việc riêng trong giờ học", "Ghi chép và làm bài đúng hướng dẫn của GVBM", "Chuẩn bị thiết bị học tập đầy đủ", "Tích cực tham gia xây dựng bài học, chủ động tương tác trong giờ học", "Làm đủ bài tập về nhà, hoàn thành các yêu cầu của bộ môn đúng thời gian quy định.", "Hoàn thành các nhiệm vụ được giao (theo dõi học tập, theo dõi kỉ luật, công việc chuyên biệt,..)", "Không nói tự do, không làm gián đoạn giờ học"]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`discipline_${index}`, value=i required)
+                        label #{i}
+
+            h3 Tôn trọng:
+            each item, index in ["Không làm tổn thương bạn (cả về thể chất và tinh thần)", "Giúp đỡ bạn, đoàn kết, thấu cảm với các bạn, tôn trọng sự khác biệt của mỗi người", "Kính trọng, vâng lời thầy cô giáo, người lớn tuổi.", "Yêu quý các em nhỏ, vâng lời cha mẹ, ông bà.", "Không sử dụng hành vi, ngôn ngữ thiếu văn minh, làm ảnh hưởng đến bạn bè, thầy cô và văn hóa của lớp", "Không dùng từ ngữ miệt thị ngoại hình, phân biệt chủng tộc, gây tổn thương cho người khác", "Không sử dụng ngôn ngữ mang tính chất kích động, công kích, cô lập, bạo lực, chia bè phái đối với bạn bè"]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`respect_${index}`, value=i required)
+                        label #{i}
+
+            h3 Trung thực:
+            each item, index in ["Sử dụng TBTM (điện thoại, laptop, ...) đúng quy định", "Không chép BTVN của bạn, không tạo điều kiện cho bạn chép bài", "Không nói dối thầy cô, bạn bè, cha mẹ.", "Không vi phạm quy chế kiểm tra", "Không sử dụng, lấy tài sản cá nhân của người khác khi chưa xin phép"]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`honesty_${index}`, value=i required)
+                        label #{i}
+
+            h3 Năng lực giao tiếp:
+            each item, index in ["Biết lựa chọn ngôn ngữ phù hợp với hoàn cảnh và đối tượng giao tiếp.", "Hiểu những phản hồi, cảm xúc của đối phương khi giao tiếp.", "Có khả năng quản lý cuộc hội thoại (bắt đầu, duy trì và kết thúc cuộc hội thoại) một cách phù hợp.", "Tự tin khi trình bày, bảo vệ ý kiến trước tập thể.", "Chủ động tương tác trong các giờ học.", "Sử dụng ngôn ngữ tích cực, biết khích lệ sự cố gắng của bản thân và các bạn"]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`communication_${index}`, value=i required)
+                        label #{i}
+
+            h3 Năng lực "học cách học":
+            each item, index in ["Lựa chọn được phương pháp học tập phù hợp với bản thân", "Lập thời gian biểu hàng ngày, hàng tuần,...", "Xác định được mục tiêu học tập và lên kế hoạch thực hiện mục tiêu đó", "Chăm chỉ, tự giác trong học tập", "Tự đánh giá, rút kinh nghiệm sau mỗi bài kiểm tra", "Biết tìm kiếm và chia sẻ tài liệu học tập một cách phù hợp", "Sử dụng sổ tay để lập kế hoạch và theo dõi tiến trình học tập hiệu quả", "Kiên trì, nỗ lực vươn lên và đạt kết quả cao trong học tập"]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`learning_${index}`, value=i required)
+                        label #{i}
+
+            h3 Năng lực phát triển cảm xúc:
+            each item, index in ["Gọi tên được cảm xúc của bản thân trong các tình huống (vui vẻ, hào hứng, thích thú, lo lắng, bối rối,...)", "Giữ được bình tĩnh, kiểm soát được cảm xúc khi gặp sự cố", "Có cách tăng cường cảm xúc tích cực (bằng lời nói, hành động,...)", "Thấu hiểu và đồng cảm với cảm xúc của người xung quanh.", "Phản ứng thích hợp với thành công, thất bại và góp ý của những người xung quanh."]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`emotional_${index}`, value=i required)
+                        label #{i}
+
+            h3 Trách nhiệm với tập thể:
+            each item, index in ["Chủ động tham gia ứng cử vào vai trò của các vị trí trong lớp, trường", "Có trách nhiệm đối với bản thân và tập thể nhóm, lớp", "Nhận thức được các vấn đề toàn cầu (ô nhiễm, dịch bệnh, nhân quyền,...)", "Hiểu, tôn trọng văn hóa của những người xung quanh", "Chủ động tham gia các hoạt động của tập thể ( văn nghệ, TDTT, HĐTN...)"]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`responsibility_${index}`, value=i required)
+                        label #{i}
+
+            h3 Năng lực giải quyết vấn đề:
+            each item, index in ["Xác định được các vấn đề, nội dung quan trọng trọng học tập", "Đề xuất và lựa chọn được giải pháp phù hợp.", "Biết tìm kiếm sự hỗ trợ khi gặp khó khăn (sách báo, mạng internet, những người xung quanh,...)", "Điều chỉnh kế hoạch một cách linh hoạt, sáng tạo và phù hợp với tình hình thực tế", "Rút ra được kinh nghiệm, kiến thức, kĩ năng sau khi giải quyết vấn đề."]
+                div
+                    label #{item}
+                    for i in [1, 2, 3, 4, 5]
+                        input(type="radio", name=`problemsolving_${index}`, value=i required)
+                        label #{i}
+
+            // Text input sections
+            h3 Điểm mạnh của con
+            textarea(name="strengths" required)
+
+            h3 Điểm yếu của con
+            textarea(name="weaknesses" required)
+
+            h3 Những điều con chưa hài lòng về bản thân và mong muốn cải thiện trong thời gian tới
+            textarea(name="improvements" required)
+
+            h3 Câu chuyện thành công
+            textarea(name="successStory" required)
+
+            h3 Mục rèn luyện thói quen tốt của con trong kỳ nghỉ hè là gì
+            textarea(name="summerGoals" required)
+
+            h3 Mục tiêu phát triển bản thân của con trong kỳ nghỉ hè là gì
+            textarea(name="personalGoals" required)
+
+            h3 Sau một năm học con muốn gửi lời cảm ơn hoặc xin lỗi đến ai
+            textarea(name="thankYouNotes" required)
+
+            button(type="submit") Submit

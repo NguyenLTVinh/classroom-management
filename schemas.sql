@@ -22,3 +22,12 @@ CREATE TABLE grades (
     year INT,
     UNIQUE (email1, subject, term, year)
 );
+
+CREATE TABLE form_submissions (
+    className VARCHAR(50) NOT NULL,
+    studentEmail VARCHAR(255) NOT NULL,
+    section VARCHAR(50) NOT NULL,
+    question VARCHAR(255) NOT NULL,
+    response TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

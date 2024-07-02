@@ -188,6 +188,16 @@ async function updateAttendance(attendanceData) {
     }
 }
 
+async function insertFormSubmission(className, studentEmail, section, question, response) {
+    const query = 'INSERT INTO form_submissions (className, studentEmail, section, question, response) VALUES (?, ?, ?, ?, ?)';
+    try {
+        await connection.awaitQuery(query, [className, studentEmail, section, question, response]);
+    } catch (error) {
+        console.error('Error inserting form submission:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getStudentsByClass,
     getClassList,
@@ -198,5 +208,6 @@ module.exports = {
     insertGrade,
     getGradesByFilters,
     getStudentsByClassForAttendance,
-    updateAttendance
+    updateAttendance,
+    insertFormSubmission
 };

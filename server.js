@@ -46,7 +46,7 @@ app.get('/api/getClassBlocks', async (req, res) => {
         const blocks = await data.getClassBlocks(year);
         res.json(blocks);
     } catch (error) {
-        res.status(500).send('Error fetching class blocks');
+        res.status(500).send('Lỗi Database');
     }
 });
   
@@ -57,7 +57,7 @@ app.get('/api/getClassNames', async (req, res) => {
         const classes = await data.getClassListByFilters(year, block);
         res.json(classes);
     } catch (error) {
-        res.status(500).send('Error fetching class names');
+        res.status(500).send('Lỗi Database');
     }
 });
 
@@ -67,7 +67,7 @@ app.get('/api/students', async (req, res) => {
         const students = await data.getStudentsByClass(className);
         res.json(students);
     } catch (error) {
-        res.status(500).send('Error fetching students');
+        res.status(500).send('Lỗi Database');
     }
 });
 
@@ -81,7 +81,7 @@ app.get('/api/grades', async (req, res) => {
         const gradesData = await data.getGradesByFilters(year, block, className, studentEmail);
         res.json(gradesData);
     } catch (error) {
-        res.status(500).send('Error fetching grades');
+        res.status(500).send('Lỗi Database');
     }
 });
 
@@ -97,7 +97,7 @@ app.get('/api/index', async (req, res) => {
         ]);
         res.json({ students, classes });
     } catch (error) {
-        res.status(500).send('Error fetching data');
+        res.status(500).send('Lỗi Database');
     }
 });
 
@@ -120,7 +120,7 @@ app.get('/add-grades', async (req, res) => {
         const { message, error } = req.query;
         res.render('addgrades', { classes, message, error });
     } catch (error) {
-        res.status(500).send('Error fetching classes');
+        res.status(500).send('Lỗi Database');
     }
 });
 
@@ -142,7 +142,22 @@ app.get('/attendance', async (req, res) => {
         const students = await data.getStudentsByClassForAttendance(className, year);
         res.render('attendance', { className, students });
     } catch (error) {
-        res.status(500).send('Error fetching attendance data');
+        res.status(500).send('Lỗi Database');
+    }
+});
+
+// form page
+app.get('/form', async (req, res) => {
+    const className = req.query.className;
+    if (!className) {
+        return res.status(400).send('Lỗi: Phải Chọn Một Lớp');
+    }
+
+    try {
+        const students = await data.getStudentsByClass(className);
+        res.render('form', { className, students });
+    } catch (error) {
+        res.status(500).send('Lỗi Database');
     }
 });
 
@@ -234,9 +249,32 @@ app.post('/attendance', async (req, res) => {
 
     try {
         await data.updateAttendance(attendance);
-        res.status(200).send('Attendance data saved successfully');
+        res.status(200).send('Lưu Thông Tin Điểm Danh Thành Công');
     } catch (error) {
-        res.status(500).send('Error saving attendance data');
+        res.status(500).send('Lỗi: Lưu Thông Tin Điểm Danh');
+    }
+});
+
+// submit form
+app.post('/submit-form', async (req, res) => {
+    const { className, student, ...formData } = req.body;
+
+    try {
+        for (const [key, value] of Object.entries(formData)) {
+            let section, question;
+            if (key.includes('_')) {
+                [section, question] = key.split('_');
+            } else {
+                section = key;
+                question = key;
+            }
+            await data.insertFormSubmission(className, student, section, question, value);
+        }
+
+        res.send('Nộp Form Thành Công');
+    } catch (error) {
+        console.error('Lỗi Khi Nộp Form:', error);
+        res.status(500).send('Lỗi Khi Nộp Form');
     }
 });
 
