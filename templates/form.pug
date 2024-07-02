@@ -1,9 +1,11 @@
+include navbar.pug
 doctype html
 html
     head
         title #{className} Nhìn lại và suy ngẫm
-        link(rel="stylesheet", href="/css/styles.css")
+        link(rel="stylesheet" href="/css/main.css")
     body
+        +navbar()
         h1 #{className} Nhìn lại và suy ngẫm
         form(action="/submit-form", method="POST")
             input(type="hidden", name="className", value=className)

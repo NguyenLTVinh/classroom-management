@@ -109,8 +109,8 @@ app.get('/', (req, res) => {
 });
 
 // add class page to upload a csv file to add the students all at once.
-app.get('/add-class', (req, res) => {
-    res.render('addclass');
+app.get('/add-students', (req, res) => {
+    res.render('addstudents');
 });
 
 // render add-grades form
@@ -163,7 +163,7 @@ app.get('/form', async (req, res) => {
 
 // POST ENDPOINTS FOR DATA SUBMISSION
 // Endpoint to handle uploading a csv to add students.
-app.post('/upload-class', upload.single('file'), (req, res) => {
+app.post('/add-students', upload.single('file'), (req, res) => {
     const filePath = req.file.path;
     const results = [];
 
@@ -178,11 +178,11 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
                 const { 'Họ Và Tên': name, 'Khối': block, 'Lớp': className, 'Giới Tính': gender, 'Ngày Sinh': birthday, 'Email 1': email1, 'Email 2': email2, 'Năm Học': schoolYear} = row;
 
                 if (!validDateRegex.test(birthday)) {
-                    return res.redirect(`/add-class?error=Sai Định Dạng Ngày Sinh`);
+                    return res.redirect(`/add-students?error=Sai Định Dạng Ngày Sinh`);
                 }
 
                 if (!validEmailRegex.test(email1) || (email2 && !validEmailRegex.test(email2))) {
-                    return res.redirect(`/add-class?error=Sai Định Dạng Email`);
+                    return res.redirect(`/add-students?error=Sai Định Dạng Email`);
                 }
                 
                 const [day, month, year] = birthday.split('/');
@@ -190,16 +190,16 @@ app.post('/upload-class', upload.single('file'), (req, res) => {
 
                 data.insertStudent(name, className, gender, formattedBirthday, email1, email2, block, schoolYear, (err, result) => {
                     if (err) {
-                        return res.redirect('/add-class?error=Lỗi Database');
+                        return res.redirect('/add-students?error=Lỗi Database');
                     }
                 });
             }
 
             fs.unlinkSync(filePath);
-            res.redirect('/add-class?message=Thêm Học Sinh Thành Công');
+            res.redirect('/add-students?message=Thêm Học Sinh Thành Công');
         })
         .on('error', (error) => {
-            res.redirect('/add-class?error=Lỗi Khi Đọc File');
+            res.redirect('/add-students?error=Lỗi Khi Đọc File');
         });
 });
 

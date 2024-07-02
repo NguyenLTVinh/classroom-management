@@ -1,0 +1,27 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title
+      block title
+        | Tiêu Đề Mặc Định
+    link(rel='stylesheet', href='/css/snackbar.css')
+    link(rel="stylesheet", href="/css/main.css")
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    script(src='/js/snackbar.js')  // Custom snackbar script
+  body
+    include navbar.pug
+    +navbar()
+    block content
+    // Snackbar messages
+    if message
+      script.
+        $(document).ready(function() {
+          showSnackbar("#{message}");
+        });
+    if error
+      script.
+        $(document).ready(function() {
+          showSnackbar("#{error}", true);
+        });
