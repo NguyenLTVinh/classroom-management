@@ -1,0 +1,20 @@
+include navbar.pug
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/main.css")
+        title Chọn Lớp
+        script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    body
+        +navbar()
+        h1 Chọn Lớp
+        form#class-select-form(action="/form-select" method="get")
+            select(name="className" onchange="this.form.submit()")
+                option(value="" disabled selected) Chọn Lớp
+                each classNameOption in classes
+                    option(value=classNameOption)= classNameOption
+        if className
+            p
+                a(href=`/form?className=${className}`) Chuyển đến form cho lớp #{className}

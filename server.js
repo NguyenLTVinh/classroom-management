@@ -135,18 +135,30 @@ app.get('/grades', (req, res) => {
 
 // attendance page
 app.get('/attendance', async (req, res) => {
-    const className = req.query.className;
+    const className = req.query.className || '';
     const year = getCurrentSchoolYear();
 
     try {
-        const students = await data.getStudentsByClassForAttendance(className, year);
-        res.render('attendance', { className, students });
+        const classes = await data.getClassList();
+        const students = className ? await data.getStudentsByClassForAttendance(className, year) : [];
+        res.render('attendance', { className, classes, students });
     } catch (error) {
         res.status(500).send('Lỗi Database');
     }
 });
 
 // form page
+app.get('/form-select', async (req, res) => {
+    const className = req.query.className || '';
+
+    try {
+        const classes = await data.getClassList();
+        res.render('formselect', { className, classes });
+    } catch (error) {
+        res.status(500).send('Lỗi Database');
+    }
+});
+
 app.get('/form', async (req, res) => {
     const className = req.query.className;
     if (!className) {

@@ -10,22 +10,24 @@ html(lang="en")
     script(src="/js/index.js")
   body
     +navbar()
-    h1 Danh Sách Học Sinh
-    label(for="year-select") Năm Học:
-    select#year-select
-      // The options will be populated dynamically
-      option(value=currentYear selected)= currentYear
-    label(for="block-select") Khối Lớp:
-    select#block-select
-      option(value="") All Blocks
-      // The options will be populated dynamically
-    label(for="class-select") Lớp:
-    select#class-select
-      option(value="") All Classes
-      if classes
-        each className in classes
-          option(value=className)= className
-    table#data-table(border="1")
+    h1.page-title Danh Sách Học Sinh
+    div.filter-container
+      div.filter-group
+        label(for="year-select") Năm Học:
+        select#year-select.year-select
+          option(value=currentYear selected)= currentYear
+      div.filter-group
+        label(for="block-select") Khối Lớp:
+        select#block-select.block-select
+          option(value="") Tất Cả
+      div.filter-group
+        label(for="class-select") Lớp:
+        select#class-select.class-select
+          option(value="") Tất Cả
+          if classes
+            each className in classes
+              option(value=className)= className
+    table#data-table.data-table(border="1")
       thead
         tr
           th Họ và Tên

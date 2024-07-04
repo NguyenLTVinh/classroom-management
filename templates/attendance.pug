@@ -3,31 +3,38 @@ doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="/css/main.css")
     title Attendance
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")
     script(src="/js/attendance.js")
   body
     +navbar()
-    h1 Điểm Danh Lớp #{className}
-    table#attendance-table(border="1")
-      thead
-        tr
-          th Tên Học Sinh
-          th Email Học Sinh
-          th Muộn Học
-          th Nghỉ Học Có Phép
-          th Nghỉ Học Không Phép
-      tbody
-        each student in students
+    h1.page-title Điểm Danh Lớp #{className}
+    form#class-select-form.filter-container(action="/attendance" method="get")
+      div.filter-group
+        select.name-select(name="className" onchange="this.form.submit()")
+          option(value="" disabled selected) Chọn Lớp
+          each classNameOption in classes
+            option(value=classNameOption)= classNameOption
+    if className
+      table#attendance-table.data-table(border="1")
+        thead
           tr
-            td= student.name
-            td= student.email1
-            td
-              input(type="number" name="late" value=student.late data-email=student.email1)
-            td
-              input(type="number" name="excused" value=student.excused data-email=student.email1)
-            td
-              input(type="number" name="unexcused" value=student.unexcused data-email=student.email1)
-    button#save-btn Save
+            th Tên Học Sinh
+            th Email Học Sinh
+            th Muộn Học
+            th Nghỉ Học Có Phép
+            th Nghỉ Học Không Phép
+        tbody
+          each student in students
+            tr
+              td= student.name
+              td= student.email1
+              td
+                input.input-field(type="number" name="late" value=student.late data-email=student.email1)
+              td
+                input.input-field(type="number" name="excused" value=student.excused data-email=student.email1)
+              td
+                input.input-field(type="number" name="unexcused" value=student.unexcused data-email=student.email1)
+      button#save-btn.save-btn Save

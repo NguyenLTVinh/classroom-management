@@ -16,7 +16,7 @@ $(document).ready(function() {
         url: '/api/getClassBlocks',
         data: { year: selectedYear },
         success: function(blocks) {
-          $('#block-select').empty().append(new Option('All Blocks', ''));
+          $('#block-select').empty().append(new Option('Tất Cả', ''));
           blocks.forEach(block => {
             $('#block-select').append(new Option(block, block));
           });
@@ -31,7 +31,7 @@ $(document).ready(function() {
         url: '/api/getClassNames',
         data: { year: selectedYear, block: selectedBlock },
         success: function(classes) {
-          $('#class-select').empty().append(new Option('All Classes', ''));
+          $('#class-select').empty().append(new Option('Tất Cả', ''));
           classes.forEach(className => {
             $('#class-select').append(new Option(className, className));
           });
@@ -47,7 +47,7 @@ $(document).ready(function() {
         url: '/api/students',
         data: { className: selectedClass },
         success: function(students) {
-          $('#student-select').empty().append(new Option('All Students', ''));
+          $('#student-select').empty().append(new Option('Tất Cả', ''));
           students.forEach(student => {
             $('#student-select').append(new Option(student.name, student.email1));
           });

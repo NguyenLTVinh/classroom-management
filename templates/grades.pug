@@ -10,22 +10,27 @@ html(lang="en")
     script(src="/js/grades.js")
   body
     +navbar()
-    h1 Danh Sách Điểm
-    label(for="year-select") Năm Học:
-    select#year-select
-      option(value=currentYear selected)= currentYear
-    label(for="block-select") Khối Lớp:
-    select#block-select
-      option(value="") All Blocks
-    label(for="class-select") Lớp:
-    select#class-select
-      option(value="") All Classes
-    label(for="student-select") Học Sinh:
-    select#student-select
-      option(value="") All Students
+    h1.page-title Danh Sách Điểm
+    div.filter-container
+      div.filter-group
+        label(for="year-select") Năm Học:
+        select#year-select.year-select
+          option(value=currentYear selected)= currentYear
+      div.filter-group
+        label(for="block-select") Khối Lớp:
+        select#block-select.block-select
+          option(value="") Tất Cả
+      div.filter-group
+        label(for="class-select") Lớp:
+        select#class-select.class-select
+          option(value="") Tất Cả
+      div.filter-group
+        label(for="student-select") Học Sinh:
+        select#student-select.student-select
+          option(value="") Tất Cả
 
-    h2 HK1
-    table#hk1-table(border="1")
+    h2.term-title HK1
+    table#hk1-table.data-table(border="1")
       thead
         tr
           th Tên Học Sinh
@@ -53,8 +58,8 @@ html(lang="en")
           tr
             td(colspan="12") No data available
 
-    h2 HK2
-    table#hk2-table(border="1")
+    h2.term-title HK2
+    table#hk2-table.data-table(border="1")
       thead
         tr
           th Tên Học Sinh

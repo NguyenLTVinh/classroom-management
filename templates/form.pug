@@ -1,13 +1,14 @@
 include navbar.pug
 doctype html
-html
+html(lang="en")
     head
-        title #{className} Nhìn lại và suy ngẫm
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet" href="/css/main.css")
+        title #{className} Nhìn lại và suy ngẫm
     body
-        +navbar()
         h1 #{className} Nhìn lại và suy ngẫm
-        form(action="/submit-form", method="POST")
+        form(action="/submit-form" method="POST")
             input(type="hidden", name="className", value=className)
             
             // Section 1: Student Selection
