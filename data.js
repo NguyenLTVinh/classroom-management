@@ -172,18 +172,34 @@ async function getStudentsByClassForAttendance(class_name, year) {
     }
 }
 
-async function updateAttendance(attendanceData) {
-    const queries = attendanceData.map(student => {
-        return connection.awaitQuery(
-            'UPDATE students SET late = ?, excused = ?, unexcused = ? WHERE email1 = ?',
-            [student.late, student.excused, student.unexcused, student.email]
-        );
+async function logAttendanceIncident(email1, type, period, time) {
+    const query = 'INSERT INTO attendance (email1, type, period, time) VALUES (?, ?, ?, ?)';
+    try {
+        await connection.awaitQuery(query, [email1, type, period, time]);
+    } catch (error) {
+        console.error('Error logging attendance incident:', error);
+        throw error;
+    }
+}
+
+async function updateAttendanceRecords(attendanceData, period) {
+    const currentTime = new Date();
+    const queries = attendanceData.map(async student => {
+        const { email, type } = student;
+        await logAttendanceIncident(email, type, period, currentTime);
+
+        let lateCount = type === 'late' ? 1 : 0;
+        let excusedCount = type === 'excused' ? 1 : 0;
+        let unexcusedCount = type === 'unexcused' ? 1 : 0;
+
+        const query = 'UPDATE students SET late = late + ?, excused = excused + ?, unexcused = unexcused + ? WHERE email1 = ?';
+        return connection.awaitQuery(query, [lateCount, excusedCount, unexcusedCount, email]);
     });
 
     try {
         await Promise.all(queries);
     } catch (error) {
-        console.error('Error updating attendance:', error);
+        console.error('Error updating attendance records:', error);
         throw error;
     }
 }
@@ -208,6 +224,7 @@ module.exports = {
     insertGrade,
     getGradesByFilters,
     getStudentsByClassForAttendance,
-    updateAttendance,
+    logAttendanceIncident,
+    updateAttendanceRecords,
     insertFormSubmission
 };

@@ -5,9 +5,8 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="/css/main.css")
-    title Attendance
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")
-    script(src="/js/attendance.js")
+    title Attendance
   body
     +navbar()
     h1.page-title Điểm Danh Lớp #{className}
@@ -31,10 +30,6 @@ html(lang="en")
             tr
               td= student.name
               td= student.email1
-              td
-                input.input-field(type="number" name="late" value=student.late data-email=student.email1)
-              td
-                input.input-field(type="number" name="excused" value=student.excused data-email=student.email1)
-              td
-                input.input-field(type="number" name="unexcused" value=student.unexcused data-email=student.email1)
-      button#save-btn.save-btn Save
+              td= student.late
+              td= student.excused
+              td= student.unexcused

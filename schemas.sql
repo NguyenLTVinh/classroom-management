@@ -31,3 +31,11 @@ CREATE TABLE form_submissions (
     response TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email1 VARCHAR(255) NOT NULL,
+    type ENUM('late', 'excused', 'unexcused') NOT NULL,
+    period TINYINT NOT NULL,
+    time DATETIME NOT NULL
+);

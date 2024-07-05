@@ -11,7 +11,10 @@ mixin navbar
         div.dropdown-content
           a(href="/grades") Danh Sách Điểm
           a(href="/add-grades") Thêm Điểm
-      li.nav-item
-        a(href="/attendance") Điểm Danh
+      li.nav-item.dropdown
+        a(href="#" class="dropbtn") Chuyên Cần
+        div.dropdown-content
+          a(href="/attendanceform") Điểm Danh
+          a(href="/attendance") Thống Kê Chuyên Cần
       li.nav-item
         a(href="/form-select") Form Nhìn Lại

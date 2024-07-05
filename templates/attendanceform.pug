@@ -1,0 +1,83 @@
+include navbar.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="/css/main.css")
+    link(rel='stylesheet', href='/css/snackbar.css')
+    title Điểm Danh Lớp #{className} Ngày #{currentDate}
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    script(src="/js/snackbar.js")
+  body
+    +navbar()
+    h1.page-title Điểm Danh Lớp #{className} Ngày #{currentDate}
+    
+    // Class selection form
+    form#class-select-form(action="/attendanceform" method="get")
+      .filter-container
+        .filter-group
+          select.name-select(name="className" onchange="this.form.submit()")
+            option(value="" disabled selected) Chọn Lớp
+            each classNameOption in classes
+              option(value=classNameOption)= classNameOption
+    
+    // Attendance form
+    if className
+      form#attendance-form(action="/submit-attendance" method="post")
+        .filter-container
+          .filter-group
+            input(type="hidden" name="className" value=className)
+            input(type="hidden" name="currentDate" value=currentDate)
+            label(for="period-select") Chọn Tiết Học
+            select#period-select.period-select(name="period")
+              option(value="" disabled selected) Chọn Tiết Học
+              each period in [1, 2, 3, 4, 5, 6, 7, 8]
+                option(value=period)= period
+        table#attendance-table.data-table(border="1")
+          thead
+            tr
+              th Tên Học Sinh
+              th Email Học Sinh
+              th Có Mặt
+              th Muộn Học
+              th Nghỉ Học Có Phép
+              th Nghỉ Học Không Phép
+          tbody
+            each student in students
+              tr
+                td= student.name
+                td= student.email1
+                td
+                  input(type="radio" name=`attendance[${student.email1}]` value="present" checked)
+                td
+                  input(type="radio" name=`attendance[${student.email1}]` value="late")
+                td
+                  input(type="radio" name=`attendance[${student.email1}]` value="excused")
+                td
+                  input(type="radio" name=`attendance[${student.email1}]` value="unexcused")
+        button#save-btn.save-btn.disabled-btn(disabled) Save
+
+    // Snackbar messages
+    if message
+      p= message 
+      script.
+        $(document).ready(function() {
+          showSnackbar("#{message}");
+        });
+    if error
+      script.
+        $(document).ready(function() {
+          showSnackbar("#{error}", true);
+        });
+
+    script.
+      $(document).ready(function() {
+        $('#period-select').change(function() {
+          if ($(this).val() !== '') {
+            $('#save-btn').prop('disabled', false).removeClass('disabled-btn');
+          } else {
+            $('#save-btn').prop('disabled', true).addClass('disabled-btn');
+          }
+        });
+      });

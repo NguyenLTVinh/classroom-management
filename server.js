@@ -147,6 +147,21 @@ app.get('/attendance', async (req, res) => {
     }
 });
 
+// attendance form page
+app.get('/attendanceform', async (req, res) => {
+    const className = req.query.className || '';
+    const message = req.query.message || '';
+    const error = req.query.error || '';
+    const currentDate = new Date().toLocaleDateString('vi-VN');
+    try {
+        const classes = await data.getClassList();
+        const students = className ? await data.getStudentsByClass(className) : [];
+        res.render('attendanceform', { className, currentDate, classes, students, message, error});
+    } catch (error) {
+        res.status(500).send('Lỗi Database');
+    }
+});
+
 // form page
 app.get('/form-select', async (req, res) => {
     const className = req.query.className || '';
@@ -256,14 +271,25 @@ app.post('/add-grades', async (req, res) => {
 });
 
 // update attendace
-app.post('/attendance', async (req, res) => {
-    const { attendance } = req.body;
+app.post('/submit-attendance', async (req, res) => {
+    const { className, period, attendance } = req.body;
+
+    if (!attendance) {
+        return res.redirect(`/attendanceform?error=Thiếu Dữ Liệu Điểm Danh&className=${className}`);
+    }
+
+    const attendanceData = Object.keys(attendance).map(email => {
+        if (attendance[email] !== 'present') {
+            return { email, type: attendance[email] };
+        }
+        return null;
+    }).filter(item => item !== null);
 
     try {
-        await data.updateAttendance(attendance);
-        res.status(200).send('Lưu Thông Tin Điểm Danh Thành Công');
+        await data.updateAttendanceRecords(attendanceData, period);
+        res.redirect(`/attendanceform?message=Đã Lưu Thành Công Điểm Danh&className=${className}`);
     } catch (error) {
-        res.status(500).send('Lỗi: Lưu Thông Tin Điểm Danh');
+        res.redirect(`/attendanceform?error=Lỗi Khi Lưu Điểm Danh&className=${className}`);
     }
 });
 
