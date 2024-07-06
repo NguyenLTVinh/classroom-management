@@ -173,7 +173,12 @@ async function getStudentsByClassForAttendance(class_name, year) {
 }
 
 async function logAttendanceIncident(email1, type, period, time) {
-    const query = 'INSERT INTO attendance (email1, type, period, time) VALUES (?, ?, ?, ?)';
+    const query = `
+        INSERT INTO attendance (email1, type, period, time)
+        VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        type = VALUES(type), time = VALUES(time)
+    `;
     try {
         await connection.awaitQuery(query, [email1, type, period, time]);
     } catch (error) {

@@ -37,5 +37,6 @@ CREATE TABLE attendance (
     email1 VARCHAR(255) NOT NULL,
     type ENUM('late', 'excused', 'unexcused') NOT NULL,
     period TINYINT NOT NULL,
-    time DATETIME NOT NULL
+    time DATETIME NOT NULL,
+    UNIQUE KEY unique_email1_period (email1, period)
 );
