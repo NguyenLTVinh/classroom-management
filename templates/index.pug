@@ -18,11 +18,11 @@ html(lang="en")
           option(value=currentYear selected)= currentYear
       div.filter-group
         label(for="block-select") Khối Lớp:
-        select#block-select.block-select
+        select#block-select.block-select(disabled)
           option(value="") Tất Cả
       div.filter-group
         label(for="class-select") Lớp:
-        select#class-select.class-select
+        select#class-select.class-select(disabled)
           option(value="") Tất Cả
           if classes
             each className in classes

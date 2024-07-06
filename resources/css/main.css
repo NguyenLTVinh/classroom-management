@@ -61,7 +61,6 @@ body {
     background-color: #f8f9fa;
     margin: 0;
     padding: 0;
-    text-align: center;
 }
 
 .page-title {
@@ -70,6 +69,7 @@ body {
     color: #253d98;
     margin-top: 20px;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .filter-container {
@@ -99,6 +99,10 @@ select {
     border-radius: 5px;
 }
 
+.term-title {
+    text-align: center;
+}
+
 .data-table {
     width: 80%;
     margin: 20px auto;
@@ -126,19 +130,78 @@ select {
 }
 
 .input-field {
-    width: 100%;
     padding: 5px;
     font-size: 1em;
     border: 1px solid #253d98;
     border-radius: 5px;
     box-sizing: border-box;
     margin: 5px 0;
+    text-align: left;
+}
+
+.form-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-link {
     text-align: center;
 }
 
-.save-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
+label {
+    display: block;
+    font-weight: bold;
+    color: #253d98;
+    margin-bottom: 5px;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+.radio-group {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+}
+
+.radio-group label {
+    margin: 0 20px 0 0;
+    display: flex;
+    align-items: center;
+}
+
+textarea.input-field {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #253d98;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+textarea.input-field {
+    height: 100px;
+}
+
+button.save-btn {
+    display: block;
+    width: 10%;
+    padding: 10px;
     font-size: 1em;
     color: white;
     background-color: #253d98;
@@ -146,13 +209,27 @@ select {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin: 0 auto;
 }
 
-.save-btn:hover {
+button.save-btn:hover {
     background-color: #1d2e6c;
 }
 
-.save-btn.disabled-btn {
+button.save-btn.disabled-btn {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button.save-btn.small-btn {
+    width: auto;
+    padding: 5px 15px;
+    font-size: 0.9em;
+    display: block;
+    margin: 20px auto;
+}
+
+button.save-btn.small-btn.disabled-btn {
     background-color: #ccc;
     cursor: not-allowed;
 }

@@ -6,6 +6,31 @@ $(document).ready(function() {
     return currentMonth >= 8 ? currentYear : currentYear - 1;
   }
 
+  // Initialize dropdowns as disabled
+  $('#block-select').prop('disabled', true);
+  $('#class-select').prop('disabled', true);
+
+  // Enable block-select when year-select is changed
+  $('#year-select').on('change', function() {
+    const yearSelected = $(this).val();
+    if (yearSelected) {
+      $('#block-select').prop('disabled', false);
+    } else {
+      $('#block-select').prop('disabled', true);
+      $('#class-select').prop('disabled', true);
+    }
+  });
+
+  // Enable class-select when block-select is changed
+  $('#block-select').on('change', function() {
+    const blockSelected = $(this).val();
+    if (blockSelected) {
+      $('#class-select').prop('disabled', false);
+    } else {
+      $('#class-select').prop('disabled', true);
+    }
+  });
+
   // Populate the school year dropdown
   const currentSchoolYear = getCurrentSchoolYear();
   for (let year = 2019; year <= currentSchoolYear + 1; year++) {

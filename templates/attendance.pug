@@ -9,7 +9,7 @@ html(lang="en")
     title Attendance
   body
     +navbar()
-    h1.page-title Điểm Danh Lớp #{className}
+    h1.page-title Thống Kê Chuyên Cần Lớp #{className}
     form#class-select-form.filter-container(action="/attendance" method="get")
       div.filter-group
         select.name-select(name="className" onchange="this.form.submit()")

@@ -18,18 +18,18 @@ html(lang="en")
           option(value=currentYear selected)= currentYear
       div.filter-group
         label(for="block-select") Khối Lớp:
-        select#block-select.block-select
+        select#block-select.block-select(disabled)
           option(value="") Tất Cả
       div.filter-group
         label(for="class-select") Lớp:
-        select#class-select.class-select
+        select#class-select.class-select(disabled)
           option(value="") Tất Cả
       div.filter-group
         label(for="student-select") Học Sinh:
-        select#student-select.student-select
+        select#student-select.student-select(disabled)
           option(value="") Tất Cả
 
-    h2.term-title HK1
+    h2.term-title Học Kì 1
     table#hk1-table.data-table(border="1")
       thead
         tr
@@ -58,7 +58,7 @@ html(lang="en")
           tr
             td(colspan="12") No data available
 
-    h2.term-title HK2
+    h2.term-title Học Kì 2
     table#hk2-table.data-table(border="1")
       thead
         tr
