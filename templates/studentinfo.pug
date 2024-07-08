@@ -1,0 +1,27 @@
+include navbar.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="/css/main.css")
+    title Student Information
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script(src="/js/studentinfo.js")
+  body
+    +navbar()
+    h1.page-title Thông Tin Học Sinh
+    if student
+      p Tên Học Sinh: #{student.name}
+      p Giới Tính: #{student.gender}
+      p Lớp: #{student.class}
+      p Ngày Sinh: #{student.birthday.toLocaleDateString('vi-VN')}
+      p Điểm Mạnh: #{strengths}
+      p Điểm Yếu: #{weaknesses}
+      p Điểm Cần Cải Thiện: #{improvements}
+      h2 Tự Đánh Giá Năng Lực, Phẩm Chất
+      canvas#selfAssessmentChart(width="400" height="200")
+      script(type="application/json" id="selfAssessmentData").
+        !{JSON.stringify(scores)}
+    else
+      p No data available

@@ -219,6 +219,48 @@ async function insertFormSubmission(className, studentEmail, section, question, 
     }
 }
 
+async function getStudentByEmail(email) {
+    const query = 'SELECT * FROM students WHERE email1 = ?';
+    try {
+        const results = await connection.awaitQuery(query, [email]);
+        return results;
+    } catch (error) {
+        console.error('Error fetching student by email:', error);
+        throw error;
+    }
+}
+
+async function getFormSubmissionResponse(email, section) {
+    const query = 'SELECT response FROM form_submissions WHERE email1 = ? AND section = ?';
+    try {
+        const results = await connection.awaitQuery(query, [email, section]);
+        return results;
+    } catch (error) {
+        console.error('Error fetching form submission response:', error);
+        throw error;
+    }
+}
+
+async function getFormSelfAssessmentAverage(email, sections) {
+    const queries = sections.map(section => {
+        return connection.awaitQuery(
+            'SELECT AVG(response) AS average FROM form_submissions WHERE email1 = ? AND section = ?',
+            [email, section]
+        );
+    });
+
+    try {
+        const results = await Promise.all(queries);
+        return results.map((result, index) => ({
+            section: sections[index],
+            average: result[0].average
+        }));
+    } catch (error) {
+        console.error('Error fetching average scores:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getStudentsByClass,
     getClassList,
@@ -231,5 +273,8 @@ module.exports = {
     getStudentsByClassForAttendance,
     logAttendanceIncident,
     updateAttendanceRecords,
-    insertFormSubmission
+    insertFormSubmission,
+    getStudentByEmail,
+    getFormSubmissionResponse,
+    getFormSelfAssessmentAverage
 };

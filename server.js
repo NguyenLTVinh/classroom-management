@@ -188,6 +188,48 @@ app.get('/form', async (req, res) => {
     }
 });
 
+app.get('/studentinfo', async (req, res) => {
+    const email = req.query.email;
+
+    if (!email) {
+        return res.status(400).send('Lỗi: Phải có email của học sinh');
+    }
+
+    try {
+        const students = await data.getStudentByEmail(email);
+        const student = students.length > 0 ? students[0] : null;
+
+        if (!student) {
+            return res.render('studentinfo', { student: null });
+        }
+
+        const [strengths, weaknesses, improvements, selfAssessmentAverage] = await Promise.all([
+            data.getFormSubmissionResponse(email, 'strengths'),
+            data.getFormSubmissionResponse(email, 'weaknesses'),
+            data.getFormSubmissionResponse(email, 'improvements'),
+            data.getFormSelfAssessmentAverage(email, ['honesty', 'respect', 'discipline'])
+        ]);
+
+        student.birthday = new Date(student.birthday); // Ensure birthday is a Date object
+
+        const scores = {
+            honesty: selfAssessmentAverage.find(score => score.section === 'honesty').average || 0,
+            respect: selfAssessmentAverage.find(score => score.section === 'respect').average || 0,
+            discipline: selfAssessmentAverage.find(score => score.section === 'discipline').average || 0
+        };
+
+        res.render('studentinfo', { 
+            student, 
+            strengths: strengths[0]?.response || 'Không có', 
+            weaknesses: weaknesses[0]?.response || 'Không có', 
+            improvements: improvements[0]?.response || 'Không có',
+            scores
+        });
+    } catch (error) {
+        res.status(500).send('Lỗi Database');
+    }
+});
+
 // POST ENDPOINTS FOR DATA SUBMISSION
 // Endpoint to handle uploading a csv to add students.
 app.post('/add-students', upload.single('file'), (req, res) => {
@@ -229,8 +271,6 @@ app.post('/add-students', upload.single('file'), (req, res) => {
             res.redirect('/add-students?error=Lỗi Khi Đọc File');
         });
 });
-
-
 
 // Endpoint to handle form submission
 app.post('/add-grades', async (req, res) => {

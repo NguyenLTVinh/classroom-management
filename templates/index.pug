@@ -40,7 +40,8 @@ html(lang="en")
         if students
           each row in students
             tr
-              td= row.name
+              td
+                a(href=`/studentinfo?email=${row.email1}`)= row.name
               td= row.class
               td= row.gender
               td= row.birthday

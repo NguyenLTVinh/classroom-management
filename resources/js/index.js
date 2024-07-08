@@ -47,7 +47,7 @@ $(document).ready(function() {
               if (response.students.length) {
                   response.students.forEach(student => {
                       const row = `<tr>
-                          <td>${student.name}</td>
+                          <td><a href="/studentinfo?email=${student.email1}">${student.name}</a></td>
                           <td>${student.class}</td>
                           <td>${student.gender}</td>
                           <td>${student.birthday}</td>
