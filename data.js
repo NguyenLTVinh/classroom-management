@@ -209,10 +209,10 @@ async function updateAttendanceRecords(attendanceData, period) {
     }
 }
 
-async function insertFormSubmission(className, studentEmail, section, question, response) {
-    const query = 'INSERT INTO form_submissions (className, studentEmail, section, question, response) VALUES (?, ?, ?, ?, ?)';
+async function insertFormSubmission(className, studentEmail, section, question, response, year) {
+    const query = 'INSERT INTO form_submissions (className, email1, section, question, response, year) VALUES (?, ?, ?, ?, ?, ?)';
     try {
-        await connection.awaitQuery(query, [className, studentEmail, section, question, response]);
+        await connection.awaitQuery(query, [className, studentEmail, section, question, response, year]);
     } catch (error) {
         console.error('Error inserting form submission:', error);
         throw error;

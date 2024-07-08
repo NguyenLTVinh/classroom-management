@@ -296,6 +296,7 @@ app.post('/submit-attendance', async (req, res) => {
 // submit form
 app.post('/submit-form', async (req, res) => {
     const { className, student, ...formData } = req.body;
+    const year = getCurrentSchoolYear();
 
     try {
         for (const [key, value] of Object.entries(formData)) {
@@ -306,7 +307,7 @@ app.post('/submit-form', async (req, res) => {
                 section = key;
                 question = key;
             }
-            await data.insertFormSubmission(className, student, section, question, value);
+            await data.insertFormSubmission(className, student, section, question, value, year);
         }
 
         res.send('Nộp Form Thành Công');

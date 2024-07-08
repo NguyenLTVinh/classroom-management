@@ -29,6 +29,7 @@ CREATE TABLE form_submissions (
     section VARCHAR(50) NOT NULL,
     question VARCHAR(255) NOT NULL,
     response TEXT NOT NULL,
+    year INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
