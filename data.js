@@ -230,10 +230,10 @@ async function getStudentByEmail(email) {
     }
 }
 
-async function getFormSubmissionResponse(email, section) {
-    const query = 'SELECT response FROM form_submissions WHERE email1 = ? AND section = ?';
+async function getFormSubmissionResponse(email, section, year) {
+    const query = 'SELECT response FROM form_submissions WHERE email1 = ? AND section = ? AND year = ?';
     try {
-        const results = await connection.awaitQuery(query, [email, section]);
+        const results = await connection.awaitQuery(query, [email, section, year]);
         return results;
     } catch (error) {
         console.error('Error fetching form submission response:', error);
@@ -241,11 +241,11 @@ async function getFormSubmissionResponse(email, section) {
     }
 }
 
-async function getFormSelfAssessmentAverage(email, sections) {
+async function getFormSelfAssessmentAverage(email, sections, year) {
     const queries = sections.map(section => {
         return connection.awaitQuery(
-            'SELECT AVG(response) AS average FROM form_submissions WHERE email1 = ? AND section = ?',
-            [email, section]
+            'SELECT AVG(response) AS average FROM form_submissions WHERE email1 = ? AND section = ? AND year = ?',
+            [email, section, year]
         );
     });
 

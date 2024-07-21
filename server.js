@@ -39,6 +39,25 @@ function getCurrentSchoolYear() {
     return currentMonth >= 8 ? currentYear : currentYear - 1;
 }
 
+// Helper function to calculate class average grades
+function calculateClassAverageGrades(grades) {
+    const subjects = {};
+    grades.forEach(student => {
+        Object.keys(student.grades).forEach(subject => {
+            if (!subjects[subject]) {
+                subjects[subject] = { total: 0, count: 0 };
+            }
+            subjects[subject].total += student.grades[subject];
+            subjects[subject].count += 1;
+        });
+    });
+    const averages = {};
+    Object.keys(subjects).forEach(subject => {
+        averages[subject] = subjects[subject].total / subjects[subject].count;
+    });
+    return averages;
+}
+
 // API ENDPOINTS FOR DATA FETCHING
 app.get('/api/getClassBlocks', async (req, res) => {
     const year = req.query.year;
@@ -194,36 +213,51 @@ app.get('/studentinfo', async (req, res) => {
     if (!email) {
         return res.status(400).send('Lỗi: Phải có email của học sinh');
     }
-
+    const currentSchoolYear = getCurrentSchoolYear()
     try {
         const students = await data.getStudentByEmail(email);
         const student = students.length > 0 ? students[0] : null;
+        const className = student.class;
 
         if (!student) {
             return res.render('studentinfo', { student: null });
         }
 
-        const [strengths, weaknesses, improvements, selfAssessmentAverage] = await Promise.all([
-            data.getFormSubmissionResponse(email, 'strengths'),
-            data.getFormSubmissionResponse(email, 'weaknesses'),
-            data.getFormSubmissionResponse(email, 'improvements'),
-            data.getFormSelfAssessmentAverage(email, ['honesty', 'respect', 'discipline'])
+        const [strengths, weaknesses, improvements, selfAssessmentAverage, studentGrades, classGrades] = await Promise.all([
+            data.getFormSubmissionResponse(email, 'strengths', currentSchoolYear),
+            data.getFormSubmissionResponse(email, 'weaknesses', currentSchoolYear),
+            data.getFormSubmissionResponse(email, 'improvements', currentSchoolYear),
+            data.getFormSelfAssessmentAverage(email, ['honesty', 'respect', 'discipline', 'communication', 'learning', 'emotional', 'responsibility', 'problemsolving'], currentSchoolYear),
+            // data.getGradesByFilters(currentYear, '', className, email),
+            // data.getGradesByFilters(currentYear, '', className, '')
         ]);
 
         student.birthday = new Date(student.birthday); // Ensure birthday is a Date object
-
+        
         const scores = {
             honesty: selfAssessmentAverage.find(score => score.section === 'honesty').average || 0,
             respect: selfAssessmentAverage.find(score => score.section === 'respect').average || 0,
-            discipline: selfAssessmentAverage.find(score => score.section === 'discipline').average || 0
+            discipline: selfAssessmentAverage.find(score => score.section === 'discipline').average || 0,
+            communication: selfAssessmentAverage.find(score => score.section === 'communication').average || 0,
+            learning: selfAssessmentAverage.find(score => score.section === 'learning').average || 0,
+            emotional: selfAssessmentAverage.find(score => score.section === 'emotional').average || 0,
+            responsibility: selfAssessmentAverage.find(score => score.section === 'responsibility').average || 0,
+            respect: selfAssessmentAverage.find(score => score.section === 'respect').average || 0,
+            problemsolving: selfAssessmentAverage.find(score => score.section === 'problemsolving').average || 0
         };
+
+        // const classGradesHK1 = calculateClassAverageGrades(classGrades.HK1);
+        // const classGradesHK2 = calculateClassAverageGrades(classGrades.HK2);
 
         res.render('studentinfo', { 
             student, 
             strengths: strengths[0]?.response || 'Không có', 
             weaknesses: weaknesses[0]?.response || 'Không có', 
             improvements: improvements[0]?.response || 'Không có',
-            scores
+            scores,
+            studentGrades,
+            // classGradesHK1,
+            // classGradesHK2
         });
     } catch (error) {
         res.status(500).send('Lỗi Database');

@@ -19,8 +19,10 @@ html(lang="en")
       p Điểm Mạnh: #{strengths}
       p Điểm Yếu: #{weaknesses}
       p Điểm Cần Cải Thiện: #{improvements}
-      h2 Tự Đánh Giá Năng Lực, Phẩm Chất
+      h2 Tự Đánh Giá Phẩm Chất
       canvas#selfAssessmentChart(width="400" height="200")
+      h2 Tự Đánh Giá Năng Lực
+      canvas#skillsRadarChart(width="400" height="400")
       script(type="application/json" id="selfAssessmentData").
         !{JSON.stringify(scores)}
     else

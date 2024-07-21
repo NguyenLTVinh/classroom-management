@@ -1,25 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     const scores = JSON.parse(document.getElementById('selfAssessmentData').textContent);
-    const ctx = document.getElementById('selfAssessmentChart').getContext('2d');
-    console.log(scores);
-    new Chart(ctx, {
+    // const studentGrades = JSON.parse(document.getElementById('studentGradesData').textContent);
+    // const classGrades = JSON.parse(document.getElementById('classGradesData').textContent);
+    // Bar Chart for Self Assessment
+    const ctxBar = document.getElementById('selfAssessmentChart').getContext('2d');
+    new Chart(ctxBar, {
         type: 'bar',
         data: {
             labels: ['Trung Thực', 'Tôn Trọng', 'Kỉ Luật Bản Thân'],
             datasets: [{
-                data: [scores.honesty, scores.respect, scores.discipline],
-                backgroundColor: [
-                    'rgba(75, 192, 192, 1)', 
-                    'rgba(255, 206, 86, 1)', 
-                    'rgba(153, 102, 255, 1)'
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)', 
-                    'rgba(255, 206, 86, 1)', 
-                    'rgba(153, 102, 255, 1)'
-                ],
+                data: [scores.honesty * 20, scores.respect * 20, scores.discipline * 20],
+                backgroundColor: 'rgba(54, 162, 235, 1)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
-                barThickness: 50,  // Adjust the thickness of the bars
+                barThickness: 50,
             }]
         },
         options: {
@@ -32,7 +26,51 @@ document.addEventListener('DOMContentLoaded', function() {
             scales: {
                 x: {
                     beginAtZero: true,
-                    max: 5
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Radar Chart for Additional Skills
+    const ctxRadar = document.getElementById('skillsRadarChart').getContext('2d');
+    new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+            labels: ['Giao Tiếp', 'Học Cách Học', 'Phát Triển Cảm Xúc', 'Trách Nhiệm Với Tập Thể', 'Giải Quyết Vấn Đề'],
+            datasets: [{
+                data: [
+                    scores.communication * 20, 
+                    scores.learning * 20, 
+                    scores.emotional * 20, 
+                    scores.responsibility * 20, 
+                    scores.problemsolving * 20
+                ],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
                 }
             }
         }
