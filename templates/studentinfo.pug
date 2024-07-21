@@ -19,11 +19,26 @@ html(lang="en")
       p Điểm Mạnh: #{strengths}
       p Điểm Yếu: #{weaknesses}
       p Điểm Cần Cải Thiện: #{improvements}
-      h2 Tự Đánh Giá Phẩm Chất
+      h2 Tự Đánh Giá Năng Lực, Phẩm Chất
       canvas#selfAssessmentChart(width="400" height="200")
-      h2 Tự Đánh Giá Năng Lực
+      h2 Tự Đánh Giá Kỹ Năng Khác
       canvas#skillsRadarChart(width="400" height="400")
+      h2 Điểm Học Sinh
+      canvas#gradesChart(width="400" height="200")
+      table#gradesTable
+        thead
+          tr
+            th Môn Học
+            th Cá Nhân HK1
+            th Trung Bình Lớp HK1
+            th Cá Nhân HK2
+            th Trung Bình Lớp HK2
+        tbody
       script(type="application/json" id="selfAssessmentData").
         !{JSON.stringify(scores)}
+      script(type="application/json" id="studentGradesData").
+        !{JSON.stringify(studentGrades)}
+      script(type="application/json" id="classGradesData").
+        !{JSON.stringify({ HK1: classGradesHK1, HK2: classGradesHK2 })}
     else
       p No data available

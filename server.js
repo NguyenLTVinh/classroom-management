@@ -9,7 +9,7 @@ const pug = require('pug');
 const data = require('./data');
 
 const app = express();
-const port = 4000;
+const port = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -223,13 +223,13 @@ app.get('/studentinfo', async (req, res) => {
             return res.render('studentinfo', { student: null });
         }
 
-        const [strengths, weaknesses, improvements, selfAssessmentAverage, studentGrades, classGrades] = await Promise.all([
+        const [strengths, weaknesses, improvements, selfAssessmentAverage, studentGradesData, classGrades] = await Promise.all([
             data.getFormSubmissionResponse(email, 'strengths', currentSchoolYear),
             data.getFormSubmissionResponse(email, 'weaknesses', currentSchoolYear),
             data.getFormSubmissionResponse(email, 'improvements', currentSchoolYear),
             data.getFormSelfAssessmentAverage(email, ['honesty', 'respect', 'discipline', 'communication', 'learning', 'emotional', 'responsibility', 'problemsolving'], currentSchoolYear),
-            // data.getGradesByFilters(currentYear, '', className, email),
-            // data.getGradesByFilters(currentYear, '', className, '')
+            data.getGradesByFilters(currentSchoolYear, '', className, email),
+            data.getGradesByFilters(currentSchoolYear, '', className, '')
         ]);
 
         student.birthday = new Date(student.birthday); // Ensure birthday is a Date object
@@ -246,8 +246,23 @@ app.get('/studentinfo', async (req, res) => {
             problemsolving: selfAssessmentAverage.find(score => score.section === 'problemsolving').average || 0
         };
 
-        // const classGradesHK1 = calculateClassAverageGrades(classGrades.HK1);
-        // const classGradesHK2 = calculateClassAverageGrades(classGrades.HK2);
+        const transformGrades = (grades) => {
+            return grades.reduce((acc, student) => {
+                Object.keys(student.grades).forEach(subject => {
+                    acc[subject] = student.grades[subject];
+                });
+                return acc;
+            }, {});
+        };
+
+        const studentGrades = {
+            HK1: transformGrades(studentGradesData.HK1),
+            HK2: transformGrades(studentGradesData.HK2)
+        };
+
+        const classGradesHK1 = calculateClassAverageGrades(classGrades.HK1);
+        const classGradesHK2 = calculateClassAverageGrades(classGrades.HK2);
+        
 
         res.render('studentinfo', { 
             student, 
@@ -256,8 +271,8 @@ app.get('/studentinfo', async (req, res) => {
             improvements: improvements[0]?.response || 'Không có',
             scores,
             studentGrades,
-            // classGradesHK1,
-            // classGradesHK2
+            classGradesHK1,
+            classGradesHK2
         });
     } catch (error) {
         res.status(500).send('Lỗi Database');
